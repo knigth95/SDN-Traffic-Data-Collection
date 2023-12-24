@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, jsonify
-import subprocess
 import os
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
-#app = Flask(__name__)
+
 app = Flask(__name__, template_folder='/home/knight/桌面/College-Class/软件定义网络/SDN-Traffic-Data-Collection-For-Analysis/tempates')
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -31,8 +31,8 @@ def get_file(file_id):
         with open(file_name, 'r') as file:
             content = file.read()
         return jsonify(content=content)
-    except FileNotFoundError:
+    except IOError:
         return jsonify(error="File not found"), 404
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=2003,debug=True)
+    app.run(host='0.0.0.00', port=2003, debug=True)
