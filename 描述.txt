@@ -1,0 +1,25 @@
+你作为一名开发工程师，等会根据我的需求给我正确的代码
+
+现阶段有的文件是contrnller.py:连接ryu控制器的代码，topology.py：启动mininet拓扑的代码，script1.sh:主机1发送数据流脚本，script2.sh：主机2发送数据流脚本，script3.sh：主机3发送数据流脚本，script4.sh：主机4发送数据流脚本,h1file.txt：收集h1的流量信息,h2file.txt：收集h2的流量信息,h3file.txt：收集h3的流量信息,h4file.txt：收集h4的流量信息
+现在需要弄一个程序，使用python2运行，需求是：是一个网页端，网页端口在2003，网页页面顶端中央有title：team1 102zzm,中间有一块巨大的区域用于展示获取的信息，网页所有的按钮位于左侧中央，一个开始按钮，点击开始后，可以在终端执行sudo python topology.py (sudo指令需要输入密码，密码为123456)&& ryu-manager controller.py ,执行完毕后，出现四个按钮h1,h2,h3,hh4，分别点击后可以分别 Run script on each xterm example: on Node: h1 run "bash ./script1.sh" on Node: h2 run "bash ./script2.sh" on Node: h3 run "bash ./script3.sh" on Node: h4 run "bash ./script4.sh"
+还有4个按钮，分别是file1、file2、file3、file4,分别点击后可以在中间的巨大的区域处展示出对应文件内的获取信息，
+文件内容例子h1file.txt如下：
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 1470 byte datagrams
+UDP buffer size:  208 KByte (default)
+------------------------------------------------------------
+[ 21] local 10.0.0.1 port 5001 connected with 10.0.0.3 port 39677
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[ 21]  0.0- 1.0 sec   151 KBytes  1.23 Mbits/sec   0.068 ms    0/  105 (0%)
+[ 21] 0.00-1.00 sec  8 datagrams received out-of-order
+[ 21]  1.0- 2.0 sec   128 KBytes  1.05 Mbits/sec   0.021 ms    0/   89 (0%)
+[ 21]  2.0- 3.0 sec   128 KBytes  1.05 Mbits/sec   0.015 ms    0/   89 (0%)
+[ 21]  3.0- 4.0 sec   128 KBytes  1.05 Mbits/sec   0.027 ms    0/   89 (0%)
+[ 21]  4.0- 5.0 sec   129 KBytes  1.06 Mbits/sec   0.011 ms    0/   90 (0%)
+[ 21]  5.0- 6.0 sec   128 KBytes  1.05 Mbits/sec   0.018 ms    0/   89 (0%)
+[ 21]  6.0- 7.0 sec   128 KBytes  1.05 Mbits/sec   0.016 ms    0/   89 (0%)
+[ 21]  7.0- 8.0 sec   128 KBytes  1.05 Mbits/sec   0.012 ms    0/   89 (0%)
+[ 21]  8.0- 9.0 sec   128 KBytes  1.05 Mbits/sec   0.019 ms    0/   89 (0%)
+[ 21]  0.0- 9.8 sec  1.25 MBytes  1.07 Mbits/sec   0.011 ms    0/  893 (0%)
+[ 21] 0.00-9.84 sec  8 datagrams received out-of-order
