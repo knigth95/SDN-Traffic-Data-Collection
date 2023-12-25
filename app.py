@@ -39,6 +39,8 @@ def ryu_start():
         return jsonify({'message': 'RYU is starting...'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/start_mininet', methods=['POST'])
 def mininet_start():
     try:
         # 注意：在实际环境中使用密码是一个安全风险
@@ -49,7 +51,10 @@ def mininet_start():
         elif sys.platform == "darwin":  # macOS系统使用
             subprocess.Popen("osascript -e 'tell app \"Terminal\" to do script \"python3 topology.py\"'", shell=True)
         elif sys.platform.startswith('linux'):  # Linux系统使用
-            subprocess.Popen(f"echo {password} | sudo -S python3 topology.py", shell=True)
+            #subprocess.Popen(f"echo {password} | sudo -S python3 topology.py", shell=True)
+           
+            #subprocess.Popen(f'gnome-terminal -- bash -c "echo {password} | sudo -S python3 topology.py; exec bash"', shell=True)
+            subprocess.Popen(f'gnome-terminal -- bash -c "sudo python3 topology.py; exec bash;read -r"', shell=True)
         else:
             raise EnvironmentError("Unsupported platform")
         
@@ -61,8 +66,8 @@ def mininet_start():
 def open_xterm(host_id):
     try:
         script_name = 'script{}.sh'.format(host_id)
-        subprocess.Popen(['xterm', '-title', 'Host {}'.format(host_id), '-e', 'bash ./{}'.format(script_name)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        return jsonify({'message': 'Xterm for Host {} is opened.'.format(host_id)}), 200
+        subprocess.Popen(['xterm', '-title', 'h{}'.format(host_id), '-e', 'bash ./{}'.format(script_name)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        return jsonify({'message': 'Xterm for h{} is opened.'.format(host_id)}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
