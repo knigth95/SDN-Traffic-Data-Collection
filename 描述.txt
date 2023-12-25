@@ -1,7 +1,8 @@
 你作为一名开发工程师，等会根据我的需求给我正确的代码
 
 现阶段有的文件是contrnller.py:连接ryu控制器的代码，topology.py：启动mininet拓扑的代码，script1.sh:主机1发送数据流脚本，script2.sh：主机2发送数据流脚本，script3.sh：主机3发送数据流脚本，script4.sh：主机4发送数据流脚本,h1file.txt：收集h1的流量信息,h2file.txt：收集h2的流量信息,h3file.txt：收集h3的流量信息,h4file.txt：收集h4的流量信息
-现在需要弄一个程序，使用python2运行，需求是：是一个网页端，网页端口在2003，网页页面顶端中央有title：team1 102zzm,中间有一块巨大的区域用于展示获取的信息，网页所有的按钮位于左侧中央，一个开始按钮，点击开始后，可以在终端执行sudo python topology.py (sudo指令需要输入密码，密码为123456)&& ryu-manager controller.py ,执行完毕后，出现四个按钮h1,h2,h3,hh4，分别点击后可以分别 Run script on each xterm example: on Node: h1 run "bash ./script1.sh" on Node: h2 run "bash ./script2.sh" on Node: h3 run "bash ./script3.sh" on Node: h4 run "bash ./script4.sh"
+现在需要弄一个程序，使用python2运行，需求是：是一个网页端，网页端口在2003，网页页面顶端中央有title：team1 102zzm,中间有一块巨大的区域用于展示获取的信息，网页所有的按钮位于左侧中央，一个开始按钮，点击开始后，可以在终端执行sudo python topology.py (sudo指令需要输入密码，密码为123456)&& ryu-manager controller.py ,执行完毕后，出现四个按钮h1,h2,h3,hh4，分别点击后可以分别在mininet界面执行指令xterm h1,然后在xterm界面执行bash ./script1.sh;h2、h3、h4同理。再添加四个按钮为h1 stop、h2 stop、h3 stop、h4 stop,
+
 还有4个按钮，分别是file1、file2、file3、file4,分别点击后可以在中间的巨大的区域处展示出对应文件内的获取信息，
 文件内容例子h1file.txt如下：
 ------------------------------------------------------------
