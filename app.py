@@ -24,72 +24,52 @@ def signal_handler(signal, frame):
 signal.signal(signal.SIGINT, signal_handler)
 signal.signal(signal.SIGTERM, signal_handler)
 
-app = Flask(__name__, template_folder='/home/knight/桌面/College-Class/软件定义网络/SDN-Traffic-Data-Collection-For-Analysis/tempates')
+app = Flask(__name__, template_folder='./tempates')
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html')  # You need to create an index.html file under templates directory
 
-@app.route('/start', methods=['POST'])
-def start():
+@app.route('/start_ryu', methods=['GET'])
+def start_ryu():
     try:
-        password = 'bsj'  # 注意这是一个安全风险，实际使用中请使用更安全的方法
-        
-        # 在后台启动topology.py脚本
-        topology_command = 'echo "{}" | sudo -S python3 topology.py'.format(password)
-        subprocess.Popen(topology_command, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        
-        # 打开一个新的终端窗口来运行 ryu-manager
-        if sys.platform == "win32":
-            ryu_command = 'start cmd /k ryu-manager controller.py'
-        elif sys.platform == "darwin":
-            ryu_command = "osascript -e 'tell app \"Terminal\" to do script \"ryu-manager controller.py\"'"
-        elif sys.platform.startswith('linux'):
-            ryu_command = "gnome-terminal -- bash -c 'ryu-manager controller.py'"
-        else:
-            raise EnvironmentError("Unsupported platform")
-        
-        subprocess.Popen(ryu_command, shell=True)
-        
-        return jsonify({'message': 'Network is starting...'}), 200
+        subprocess.Popen(['ryu-manager', 'controller.py'])
+        return jsonify(status="success", message="RYU Controller started")
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify(status="error", message=str(e))
 
-@app.route('/open_xterm/<host_id>', methods=['POST'])
-def open_xterm(host_id):
+@app.route('/start_mininet', methods=['GET'])
+def start_mininet():
     try:
-        script_name = 'script{}.sh'.format(host_id)
-        # 修改这里，使xterm打开后立即执行指定的脚本
-        subprocess.Popen('xterm -title "Host {}" -e "bash ./{}"'.format(host_id, script_name), shell=True)
-        
-        return jsonify({'message': 'Xterm for Host {} with script {} is opened.'.format(host_id, script_name)}), 200
+        subprocess.Popen(['mn', '--custom', 'topology.py', '--topo', 'mytopo'])
+        return jsonify(status="success", message="Mininet started")
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify(status="error", message=str(e))
 
-@app.route('/script/<host_id>', methods=['POST'])
-def script(host_id):
-    action = request.form['action']  # "start" or "stop"
-    script_name = 'script{}.sh'.format(host_id)
+@app.route('/start_script/<int:host_number>', methods=['GET'])
+def start_script(host_number):
     try:
-        if action == 'start':
-            subprocess.Popen(['/bin/bash', script_name], cwd=os.getcwd())
-        elif action == 'stop':
-            subprocess.Popen(['/bin/bash', script_name, 'stop'], cwd=os.getcwd())
-        return jsonify({'message': 'Action {} for script {} executed.'.format(action, script_name)}), 200
+        subprocess.Popen(['xterm', '-e', f'bash ./script{host_number}.sh'])
+        return jsonify(status="success", message=f"Host{host_number} script started")
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify(status="error", message=str(e))
 
-@app.route('/show_file/<file_id>', methods=['GET'])
-def show_file(file_id):
-    filename = 'h{}file.txt'.format(file_id)
+@app.route('/stop_script/<int:host_number>', methods=['GET'])
+def stop_script(host_number):
+    # This requires properly writing the scripts to handle 'stop' signal
+    return jsonify(status="error", message="Not implemented")
+
+@app.route('/view_file/<int:host_number>', methods=['GET'])
+def view_file(host_number):
     try:
-        with open(filename, 'r') as f:
-            file_content = f.read()
-        return jsonify({'file_content': file_content}), 200
+        file_path = os.path.join(app.root_path, f'h{host_number}file.txt')
+        with open(file_path, 'r') as file: 
+            file_content = file.read()
+        return jsonify(status="success", content=file_content)
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify(status="error", message=str(e))
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     try:
         app.run(host='0.0.0.0', port=2003, debug=True, use_reloader=True)
     except Exception as e:
