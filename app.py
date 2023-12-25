@@ -2,9 +2,27 @@
 from flask import Flask, render_template, jsonify
 import os
 import subprocess
+import signal
 import sys
 #reload(sys)
 #sys.setdefaultencoding('utf8')
+
+def release_resources():
+    print("Releasing bound ports and other resources...")
+    # 在这里可以添加关闭数据库连接、停止后台线程等操作
+    # 对于端口，Flask内置的开发服务器将在程序退出时自动释放端口
+    # 对于其他服务器或应用程序占用的端口，可以在此执行必要的释放操作
+    # 例如：subprocess.Popen(['fuser', '-k', '2003/tcp'])
+
+# 通过信号处理确保意外终止时调用资源释放函数
+def signal_handler(signal, frame):
+    release_resources()
+    sys.exit(0)
+
+
+# 绑定信号处理函数
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
 
 app = Flask(__name__, template_folder='/home/knight/桌面/College-Class/软件定义网络/SDN-Traffic-Data-Collection-For-Analysis/tempates')
 
@@ -56,4 +74,9 @@ def show_file(file_id):
         return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=2003,debug=True)
+    try:
+        app.run(host='0.0.0.0', port=2003, debug=True, use_reloader=True)
+    except Exception as e:
+        print("An exception occurred: {}".format(e))
+    finally:
+        release_resources()
