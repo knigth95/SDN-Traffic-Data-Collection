@@ -53,7 +53,10 @@
     </div>
 
     <script>
-        document.getElementById('start').addEventListener('click', startNetwork);
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('mininet_start').addEventListener('click', startMininet);
+            document.getElementById('ryu_start').addEventListener('click', startRyu);
+        });
 
         function startMininet() {
             fetch('/start_mininet', {
@@ -63,7 +66,7 @@
             }).catch(error => alert(error));
         }
 
-        function startMininet() {
+        function startRyu() {
             fetch('/start_ryu', {
                 method: 'POST'
             }).then(response => response.json()).then(data => {
