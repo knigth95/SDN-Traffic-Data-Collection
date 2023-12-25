@@ -1,64 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Team1 102zzm Control Panel</title>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8">
+    <title>team1 102zzm</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .title {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #eaeaea;
+        }
+        .main {
+            flex-grow: 1;
+            display: flex;
+        }
+        .buttons {
+            width: 200px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .button {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #fff;
+            overflow: auto;
+            box-sizing: border-box;
+        }
+        .content pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
 </head>
 <body>
+    <div class="title">
+        <h1>team1 102zzm</h1>
+    </div>
+    <div class="main">
+        <div class="buttons">
+            <button id="start_ryu" class="button">Start RYU</button>
+            <button id="start_mininet" class="button">Start Mininet</button>
+            <button onclick="openXterm(1)" class="button">Start H1</button>
+            <button onclick="openXterm(2)" class="button">Start H2</button>
+            <button onclick="openXterm(3)" class="button">Start H3</button>
+            <button onclick="openXterm(4)" class="button">Start H4</button>
+            <button onclick="stopScript(1)" class="button">Stop H1</button>
+            <button onclick="stopScript(2)" class="button">Stop H2</button>
+            <button onclick="stopScript(3)" class="button">Stop H3</button>
+            <button onclick="stopScript(4)" class="button">Stop H4</button>
+            <button onclick="showFile(1)" class="button">Show File 1</button>
+            <button onclick="showFile(2)" class="button">Show File 2</button>
+            <button onclick="showFile(3)" class="button">Show File 3</button>
+            <button onclick="showFile(4)" class="button">Show File 4</button>
+        </div>
+        <div class="content">
+            <pre id="fileContent">Content will be displayed here...</pre>
+        </div>
+    </div>
 
-<div style="text-align: center;">
-    <h1>team1 102zzm</h1>
-    <div id="output" style="height: 300px; background-color: #f0f0f0;"></div>
-</div>
+    <script>
+        document.getElementById('start_ryu').addEventListener('click', startRyu);
+        document.getElementById('start_mininet').addEventListener('click', startMininet);
 
-<div style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
-    <button onclick="startRyu()">Start RYU</button>
-    <button onclick="startMininet()">Start Mininet</button>
-    <button onclick="startScript(1)">Start H1</button>
-    <button onclick="startScript(2)">Start H2</button>
-    <button onclick="startScript(3)">Start H3</button>
-    <button onclick="startScript(4)">Start H4</button>
-    
-    <!-- Your stop script buttons will go here -->
-    
-    <button onclick="viewFile(1)">View File 1</button>
-    <button onclick="viewFile(2)">View File 2</button>
-    <button onclick="viewFile(3)">View File 3</button>
-    <button onclick="viewFile(4)">View File 4</button>
-</div>
-
-<script>
-function startRyu() {
-    $.get("/start_ryu", function(data) {
-        alert(data.message);
-    });
-}
-
-function startMininet() {
-    $.get("/start_mininet", function(data) {
-        alert(data.message);
-    });
-}
-
-function startScript(hostNumber) {
-    $.get("/start_script/" + hostNumber, function(data) {
-        alert(data.message);
-    });
-}
-
-// Add your stopScript function here to handle stop actions
-
-function viewFile(hostNumber) {
-    $.get("/view_file/" + hostNumber, function(data) {
-        if(data.status === "success") {
-            $('#output').text(data.content);
-        } else {
-            alert(data.message);
+        function startRyu() {
+            fetch('/start_ryu', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => alert(data.message))
+                .catch(error => alert(error));
         }
-    });
-}
-</script>
 
+        function startMininet() {
+            fetch('/start_mininet', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => alert(data.message))
+                .catch(error => alert(error));
+        }
+
+        function openXterm(hostId) {
+            fetch('/open_xterm/' + hostId, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => alert(data.message))
+                .catch(error => alert(error));
+        }
+
+        function stopScript(hostId) {
+            fetch('/stop_script/' + hostId, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => alert(data.message))
+                .catch(error => alert(error));
+        }
+
+        function showFile(fileId) {
+            fetch('/show_file/' + fileId)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('fileContent').textContent = data.file_content;
+                }).catch(error => alert(error));
+        }
+    </script>
 </body>
 </html>

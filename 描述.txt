@@ -1,7 +1,7 @@
 你作为一名开发工程师，等会根据我的需求给我正确的代码
 
 现阶段有的文件是contrnller.py:连接ryu控制器的代码，topology.py：启动mininet拓扑的代码，script1.sh:主机1发送数据流脚本，script2.sh：主机2发送数据流脚本，script3.sh：主机3发送数据流脚本，script4.sh：主机4发送数据流脚本,h1file.txt：收集h1的流量信息,h2file.txt：收集h2的流量信息,h3file.txt：收集h3的流量信息,h4file.txt：收集h4的流量信息
-现在需要弄一个程序，使用python2运行，需求是：是一个网页端，网页端口在2003，当程序发生意外中断时，会释放端口资源，支持热重载，网页页面顶端中央有title：team1 102zzm,中间有块巨大的区域用于展示获取的信息，网页所有的按钮位于左侧中央，一个启动ryu按钮，点击后，可以在新终端新执行ryu-manager controller.py，然后还有一个启动mininet按钮，点击后可以打开新终端的执行指令sudo python topology.py (sudo指令需要输入密码，密码为123456),执行完毕后，再点击show topo按钮，会出现对应的mininet的拓扑展示在底部中央，还有四个按钮h1,h2,h3,h4，分别点击后可以分别在mininet界面执行指令xterm h1（即打开xterm窗口）,然后往xterm界面执行bash ./script1.sh;h2、h3、h4同理（例如：script_name = 'script{}.sh'.format(host_id)
+现在需要弄一个程序，使用python2运行，需求是：是一个网页端，网页端口在2003，当程序发生意外中断时，会释放端口资源，支持热重载，网页页面顶端中央有title：team1 102zzm,中间有块巨大的区域用于展示获取的信息，网页所有的按钮位于左侧中央，一个启动ryu按钮，点击后，可以在新终端新执行ryu-manager controller.py，然后还有一个启动mininet按钮，点击后可以打开新终端的执行指令sudo python topology.py (sudo指令需要输入密码，密码为123456),有四个按钮h1,h2,h3,h4，分别点击后可以分别在mininet界面执行指令xterm h1（即打开xterm窗口）,然后往xterm界面执行bash ./script1.sh;h2、h3、h4同理（例如：script_name = 'script{}.sh'.format(host_id)
         # 修改这里，使xterm打开后立即执行指定的脚本
         subprocess.Popen('xterm -title "Host {}" -e "bash ./{}"'.format(host_id, script_name), shell=True)）。再添加四个按钮为h1 stop、h2 stop、h3 stop、h4 stop，分别点击后可以分别在mininet界面执行指令xterm h1（即打开xterm窗口）,然后往xterm界面执行bash ./script1.sh stop;h2、h3、h4同理。
 还有4个按钮，分别是file1、file2、file3、file4,分别点击后可以在中间的巨大的区域处展示出对应文件内的获取信息，

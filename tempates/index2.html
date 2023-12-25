@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Team1 102zzm Control Panel</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<div style="text-align: center;">
+    <h1>team1 102zzm</h1>
+    <div id="output" style="height: 300px; background-color: #f0f0f0;"></div>
+</div>
+
+<div style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+    <button onclick="startRyu()">Start RYU</button>
+    <button onclick="startMininet()">Start Mininet</button>
+    <button onclick="startScript(1)">Start H1</button>
+    <button onclick="startScript(2)">Start H2</button>
+    <button onclick="startScript(3)">Start H3</button>
+    <button onclick="startScript(4)">Start H4</button>
+    
+    <!-- Your stop script buttons will go here -->
+    
+    <button onclick="viewFile(1)">View File 1</button>
+    <button onclick="viewFile(2)">View File 2</button>
+    <button onclick="viewFile(3)">View File 3</button>
+    <button onclick="viewFile(4)">View File 4</button>
+</div>
+
+<script>
+function startRyu() {
+    $.get("/start_ryu", function(data) {
+        alert(data.message);
+    });
+}
+
+function startMininet() {
+    $.get("/start_mininet", function(data) {
+        alert(data.message);
+    });
+}
+
+function startScript(hostNumber) {
+    $.get("/start_script/" + hostNumber, function(data) {
+        alert(data.message);
+    });
+}
+
+// Add your stopScript function here to handle stop actions
+
+function viewFile(hostNumber) {
+    $.get("/view_file/" + hostNumber, function(data) {
+        if(data.status === "success") {
+            $('#output').text(data.content);
+        } else {
+            alert(data.message);
+        }
+    });
+}
+</script>
+
+</body>
+</html>
