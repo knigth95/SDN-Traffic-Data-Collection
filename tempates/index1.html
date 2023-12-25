@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>team1 102zzm</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .title {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .buttons {
+            position: fixed;
+            left: 20px;
+            top: 100px;
+        }
+        .content {
+            margin-left: 150px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+        }
+        .buttons button {
+            display: block;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <h1>team1 bsj & zzm & qhl & lyy</h1>
+    </div>
+    <div class="buttons">
+        <button id="mininet_start">Start mininet</button>
+        <button id="ryu_start">Start ryu</button>
+        <button onclick="openXterm(1)">start h1</button>
+        <button onclick="openXterm(2)">start h2</button>
+        <button onclick="openXterm(3)">start h3</button>
+        <button onclick="openXterm(4)">start h4</button>
+        <button onclick="toggleScript(1, 'stop')">Stop H1 Script</button>
+        <button onclick="toggleScript(2, 'stop')">Stop H2 Script</button>
+        <button onclick="toggleScript(3, 'stop')">Stop H3 Script</button>
+        <button onclick="toggleScript(4, 'stop')">Stop H4 Script</button>
+        <button onclick="showFile(1)">Show File 1</button>
+        <button onclick="showFile(2)">Show File 2</button>
+        <button onclick="showFile(3)">Show File 3</button>
+        <button onclick="showFile(4)">Show File 4</button>
+    </div>
+    <div class="content">
+        <pre id="fileContent"></pre>
+    </div>
+
+    <script>
+        document.getElementById('start').addEventListener('click', startNetwork);
+
+        function startMininet() {
+            fetch('/start_mininet', {
+                method: 'POST'
+            }).then(response => response.json()).then(data => {
+                alert(data.message);
+            }).catch(error => alert(error));
+        }
+
+        function startMininet() {
+            fetch('/start_ryu', {
+                method: 'POST'
+            }).then(response => response.json()).then(data => {
+                alert(data.message);
+            }).catch(error => alert(error));
+        }
+
+        function openXterm(hostId) {
+            fetch('/open_xterm/' + hostId, {
+                method: 'POST'
+            }).then(response => response.json()).then(data => {
+                alert(data.message);
+            }).catch(error => alert(error));
+        }
+        
+        function toggleScript(hostId, action) {
+            fetch('/script/' + hostId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=' + action
+            }).then(response => response.json()).then(data => {
+                alert(data.message);
+            }).catch(error => alert(error));
+        }
+
+        function showFile(fileId) {
+            fetch('/show_file/' + fileId).then(response => response.json()).then(data => {
+                document.getElementById('fileContent').textContent = data.file_content;
+            }).catch(error => alert(error));
+        }
+    </script>
+</body>
+</html>
