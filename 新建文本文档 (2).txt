@@ -1,0 +1,36 @@
+from mininet.net import Mininet
+from mininet.node import Controller, RemoteController
+from mininet.cli import CLI
+from mininet.log import setLogLevel
+
+def run_script(host, script):
+    host.sendCmd(script)
+
+def setup_network():
+    net = Mininet(controller=RemoteController)
+    c0 = net.addController('c0', ip='127.0.0.1', port=6633)
+
+    h1 = net.addHost('h1')
+    h2 = net.addHost('h2')
+
+    s1 = net.addSwitch('s1')
+
+    net.addLink(h1, s1)
+    net.addLink(h2, s1)
+
+    net.start()
+
+    h1.cmd('xterm -hold -e bash -c "echo \'Hello from h1!\'" &')
+    h2.cmd('xterm -hold -e bash -c "echo \'Hello from h2!\'" &')
+
+    script = 'echo "Running script..."; sleep 5; echo "Script execution complete."'
+    run_script(h1, script)
+    run_script(h2, script)
+
+    CLI(net)
+
+    net.stop()
+
+if __name__ == '__main__':
+    setLogLevel('info')
+    setup_network()

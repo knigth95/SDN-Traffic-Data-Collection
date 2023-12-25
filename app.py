@@ -33,10 +33,24 @@ def index():
 @app.route('/start', methods=['POST'])
 def start():
     try:
-        # 注意：在生产环境中，请避免使用subprocess来运行有sudo权限的命令，这是一个示例。
-        password = 'bsj'  # 切勿在生产代码中硬编码密码!
-        command = 'echo "{}" | sudo -S python3 topology.py && ryu-manager controller.py'.format(password)
-        subprocess.Popen(command, shell=True)
+        password = 'bsj'  # 注意这是一个安全风险，实际使用中请使用更安全的方法
+        
+        # 在后台启动topology.py脚本
+        topology_command = 'echo "{}" | sudo -S python3 topology.py'.format(password)
+        subprocess.Popen(topology_command, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        
+        # 打开一个新的终端窗口来运行 ryu-manager
+        if sys.platform == "win32":
+            ryu_command = 'start cmd /k ryu-manager controller.py'
+        elif sys.platform == "darwin":
+            ryu_command = "osascript -e 'tell app \"Terminal\" to do script \"ryu-manager controller.py\"'"
+        elif sys.platform.startswith('linux'):
+            ryu_command = "gnome-terminal -- bash -c 'ryu-manager controller.py'"
+        else:
+            raise EnvironmentError("Unsupported platform")
+        
+        subprocess.Popen(ryu_command, shell=True)
+        
         return jsonify({'message': 'Network is starting...'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -44,9 +58,11 @@ def start():
 @app.route('/open_xterm/<host_id>', methods=['POST'])
 def open_xterm(host_id):
     try:
-        # 在mininet主机上打开xterm
-        subprocess.Popen('xterm -title "Host {}" -e mininet/util/m h{}'.format(host_id, host_id), shell=True)
-        return jsonify({'message': 'Xterm for Host {} is opened.'.format(host_id)}), 200
+        script_name = 'script{}.sh'.format(host_id)
+        # 修改这里，使xterm打开后立即执行指定的脚本
+        subprocess.Popen('xterm -title "Host {}" -e "bash ./{}"'.format(host_id, script_name), shell=True)
+        
+        return jsonify({'message': 'Xterm for Host {} with script {} is opened.'.format(host_id, script_name)}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
