@@ -26,17 +26,33 @@ def index():
 @app.route('/start_ryu', methods=['POST'])
 def ryu_start():
     try:
-        subprocess.Popen(['sudo', '-S', 'ryu-manager', 'controller.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # 根据不同操作系统打开一个新的终端窗口来运行ryu-manager
+        if sys.platform == "win32":
+            subprocess.Popen('start cmd /k ryu-manager controller.py', shell=True)
+        elif sys.platform == "darwin":
+            subprocess.Popen("osascript -e 'tell app \"Terminal\" to do script \"ryu-manager controller.py\"'", shell=True)
+        elif sys.platform.startswith('linux'):
+            subprocess.Popen('gnome-terminal -- bash -c "ryu-manager controller.py"', shell=True)
+        else:
+            raise EnvironmentError("Unsupported platform")
+
         return jsonify({'message': 'RYU is starting...'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-@app.route('/start_mininet', methods=['POST'])
 def mininet_start():
     try:
-        password = 'bsj'  # 密码应从更安全的地方获取
-        command = 'echo {} | sudo -S python topology.py'.format(password)
-        subprocess.Popen(command, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # 注意：在实际环境中使用密码是一个安全风险
+        password = 'bsj'  # 实际使用中请使用更安全的方法
+        
+        if sys.platform == "win32":  # Windows系统使用
+            subprocess.Popen("start cmd /k python3 topology.py", shell=True)
+        elif sys.platform == "darwin":  # macOS系统使用
+            subprocess.Popen("osascript -e 'tell app \"Terminal\" to do script \"python3 topology.py\"'", shell=True)
+        elif sys.platform.startswith('linux'):  # Linux系统使用
+            subprocess.Popen(f"echo {password} | sudo -S python3 topology.py", shell=True)
+        else:
+            raise EnvironmentError("Unsupported platform")
+        
         return jsonify({'message': 'Mininet is starting...'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
