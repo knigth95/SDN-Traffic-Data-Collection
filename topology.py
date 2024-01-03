@@ -2,6 +2,7 @@ from mininet.net import Mininet
 from mininet.node import RemoteController
 from mininet.cli import CLI
 from mininet.log import setLogLevel, info
+import os
 
 def emptyNet():
 
@@ -17,6 +18,10 @@ def emptyNet():
     h2 = net.addHost( 'h2', ip='10.0.0.2' )
     h3 = net.addHost( 'h3', ip='10.0.0.3' )
     h4 = net.addHost( 'h4', ip='10.0.0.4' )
+    
+    info( '*** Starting network\n')
+    
+    
 
     info( '*** Adding switch\n' )
     s1 = net.addSwitch( 's1' )
@@ -52,6 +57,12 @@ def emptyNet():
 
     info( '*** Starting network\n')
     net.start()
+    os.popen('ovs-vsctl add-port s1 ens33')
+    h1.cmdPrint('dhclient '+h1.defaultIntf().name)
+    h2.cmdPrint('dhclient '+h2.defaultIntf().name)
+    
+    h3.cmdPrint('dhclient '+h3.defaultIntf().name)
+    h4.cmdPrint('dhclient '+h4.defaultIntf().name)
 
     info( '*** Running CLI\n' )
     CLI( net )

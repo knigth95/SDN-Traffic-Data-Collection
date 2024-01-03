@@ -5,7 +5,7 @@ import subprocess
 import signal
 import sys
 
-app = Flask(__name__, template_folder='/home/knight/桌面/College-Class/软件定义网络/SDN-Traffic-Data-Collection-For-Analysis/tempates')
+app = Flask(__name__, template_folder='./tempates')
 
 # 释放资源的函数
 def release_resources():
