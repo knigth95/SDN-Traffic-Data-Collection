@@ -5,7 +5,7 @@ import subprocess
 import signal
 import sys
 
-app = Flask(__name__, template_folder='./tempates')
+app = Flask(__name__, template_folder='/home/knight/桌面/College-Class/软件定义网络/SDN-Traffic-Data-Collection-For-Analysis/tempates')
 
 # 释放资源的函数
 def release_resources():
@@ -43,16 +43,14 @@ def ryu_start():
 @app.route('/start_mininet', methods=['POST'])
 def mininet_start():
     try:
-        # 注意：在实际环境中使用密码是一个安全风险
-        password = 'bsj'  # 实际使用中请使用更安全的方法
         
-        if sys.platform == "win32":  # Windows系统使用
+        password = 'bsj'
+        if sys.platform == "win32":
             subprocess.Popen("start cmd /k python3 topology.py", shell=True)
-        elif sys.platform == "darwin":  # macOS系统使用
+        elif sys.platform == "darwin":
             subprocess.Popen("osascript -e 'tell app \"Terminal\" to do script \"python3 topology.py\"'", shell=True)
-        elif sys.platform.startswith('linux'):  # Linux系统使用
+        elif sys.platform.startswith('linux'):
             #subprocess.Popen(f"echo {password} | sudo -S python3 topology.py", shell=True)
-           
             #subprocess.Popen(f'gnome-terminal -- bash -c "echo {password} | sudo -S python3 topology.py; exec bash"', shell=True)
             subprocess.Popen(f'gnome-terminal -- bash -c "sudo python3 topology.py; exec bash;read -r"', shell=True)
         else:

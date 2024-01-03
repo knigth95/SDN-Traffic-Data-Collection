@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mininet Topology Visualization</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+        .node {
+            stroke: #fff;
+            stroke-width: 1.5px;
+        }
+        .link {
+            stroke: #999;
+            stroke-opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <svg width="960" height="600"></svg>
+    <script>
+        // 设置 SVG 和 force 仿真
+        const width = 960, height = 600;
+        const svg = d3.select('svg').attr('width', width).attr('height', height);
+
+        const simulation = d3.forceSimulation()
+            .force('link', d3.forceLink().id(d => d.id))
+            .force('charge', d3.forceManyBody())
+            .force('center', d3.forceCenter(width / 2, height / 2));
+
+        // 加载拓扑数据
+        fetch('/topology').then(response => response.json()).then(graph => {
+            // 创建链接和节点元素
+            const links = svg.append('g')
+                .attr('class', 'links')
+                .selectAll('line')
+                .data(graph.links)
+                .enter().append('line')
+                .attr('class', 'link');
+                
+            const nodes = svg.append('g')
+                .attr('class', 'nodes')
+                .selectAll('circle')
+                .data([...graph.hosts, ...graph.switches])
+                .enter().append('circle')
+                .attr('class', 'node')
+                .attr('r', 5)
+                .call(d3.drag()
+                    .on('start', dragstarted)
+                    .on('drag', dragged)
+                    .on('end', dragended));
+
+            // 设置仿真的节点和链接
+            simulation
+                .nodes([...graph.hosts, ...graph.switches])
+                .on('tick', ticked);
+
+            simulation.force('link')
+                .links(graph.links);
+
+            // 拖拽事件处理器
+            function dragstarted(d) {
+                if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+
+            function dragged(d) {
+                d.fx = d3.event.x;
+                d.fy = d3.event.y;
+            }
+
+            function dragended(d) {
+                if (!d3.event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+
+            // 每次仿真迭代调用的函数
+            function ticked() {
+                links
+                    .attr('x1', d => d.source.x)
+                    .attr('y1', d => d.source.y)
+                    .attr('x2', d => d.target.x)
+                    .attr('y2', d => d.target.y);
+
+                nodes
+                    .attr('cx', d => d.x)
+                    .attr('cy', d => d.y);
+            }
+        });
+
+    </script>
+</body>
+</html>
